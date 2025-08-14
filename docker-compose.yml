@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres
+    container_name: contenedor-bd-postgres
+    environment:
+      POSTGRES_USER: nahuel
+      POSTGRES_PASSWORD: "1234"
+      POSTGRES_DB: db-marca
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  pgdata:
+    driver: local
