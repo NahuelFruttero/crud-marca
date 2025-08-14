@@ -1,38 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Marca } from './entities/marca.entity';
+import { CreateMarcaDto } from './dto/create-marca.dto';
+import { UpdateMarcaDto } from './dto/update-marca.dto';
 
 @Injectable()
 export class MarcaService {
   constructor(
     @InjectRepository(Marca)
-    private marcaRepository: Repository<Marca>,
+    private readonly marcaRepository: Repository<Marca>,
   ) {}
 
-  async findAll(): Promise<Marca[]> {
+  findAll(): Promise<Marca[]> {
     return this.marcaRepository.find();
   }
 
-  async findOne(id: number): Promise<Marca | null> {
+  findOne(id: number): Promise<Marca | null> {
     return this.marcaRepository.findOneBy({ id });
   }
 
-  async create(denominacion: string): Promise<Marca> {
-    const marca = this.marcaRepository.create({ denominacion });
+  async create(dto: CreateMarcaDto): Promise<Marca> {
+    const marca = this.marcaRepository.create(dto);
     return this.marcaRepository.save(marca);
   }
 
-  async update(id: number, denominacion: string): Promise<Marca> {
-    const marca = await this.findOne(id);
-    if (!marca) throw new Error('Marca no encontrada');
-    marca.denominacion = denominacion;
+  async update(id: number, dto: UpdateMarcaDto): Promise<Marca> {
+    // `preload` combina id + dto y valida existencia
+    const marca = await this.marcaRepository.preload({ id, ...dto });
+    if (!marca) throw new NotFoundException('Marca no encontrada');
     return this.marcaRepository.save(marca);
   }
 
   async remove(id: number): Promise<void> {
-    const marca = await this.findOne(id);
-    if (!marca) throw new Error('Marca no encontrada');
+    const marca = await this.marcaRepository.findOneBy({ id });
+    if (!marca) throw new NotFoundException('Marca no encontrada');
     await this.marcaRepository.remove(marca);
   }
 }

@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe,} from '@nestjs/common';
 import { MarcaService } from './marca.service';
 import { Marca } from './entities/marca.entity';
+import { CreateMarcaDto } from './dto/create-marca.dto';
+import { UpdateMarcaDto } from './dto/update-marca.dto';
 
-@Controller('marca')
+@Controller('marcas')
 export class MarcaController {
   constructor(private readonly marcaService: MarcaService) {}
 
@@ -17,16 +19,16 @@ export class MarcaController {
   }
 
   @Post()
-  create(@Body('denominacion') denominacion: string): Promise<Marca> {
-    return this.marcaService.create(denominacion);
+  create(@Body() dto: CreateMarcaDto): Promise<Marca> {
+    return this.marcaService.create(dto);
   }
 
   @Put(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body('denominacion') denominacion: string,
+    @Body() dto: UpdateMarcaDto,
   ): Promise<Marca> {
-    return this.marcaService.update(id, denominacion);
+    return this.marcaService.update(id, dto);
   }
 
   @Delete(':id')
