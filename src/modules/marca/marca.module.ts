@@ -8,6 +8,7 @@ import { Marca } from './entities/marca.entity';
   imports: [TypeOrmModule.forFeature([Marca])],
   controllers: [MarcaController],
   providers: [MarcaService],
+  exports: [TypeOrmModule, MarcaService],
 })
 
 export class MarcaModule {}
