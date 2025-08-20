@@ -8,4 +8,19 @@ export class Marca {
 
    @Column()
    denominacion: string;
+
+   @Column()
+   observacion?: string;
+
+   @Column()
+   sistema?: number;
+
+   @Column()
+   createdAt?: Date;
+
+   @Column()
+   deletedAt?: Date;
+
+   @Column()
+   updatedAt?: Date;
 }
